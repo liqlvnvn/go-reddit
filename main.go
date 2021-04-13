@@ -35,10 +35,21 @@ func (i Item) String() string {
 	return fmt.Sprintf("%s%s\n%s", i.Title, com, i.URL)
 }
 
+const UserAgent = "Golang Reddit Reader"
+
 func Get(reddit string) ([]Item, error) {
 	url := fmt.Sprintf("http://reddit.com/r/%s.json", reddit)
-	resp, err := http.Get(url)
-	// resp, err := http.NewRequest("GET", url, nil)
+
+	// Create a request and add the proper headers.
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", UserAgent)
+
+	// Handle the request
+	// resp, err := http.Get(url)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
